@@ -1,0 +1,226 @@
+---
+title: "time series project"
+author: "Xiang Liu"
+date: "November 27, 2014"
+output:
+  html_document: default
+  pdf_document:
+    fig_height: 4
+    fig_width: 8
+    keep_tex: yes
+    latex_engine: lualatex
+---
+
+***
+
+# Data Information
+
+### > __Data source__: [TN Federal Reserve Bank](http://research.stlouisfed.org/fred2/data/SMU47000006500000003.txt) 
+### > __Variable__: Average Hourly Earnings of All Employees: Education and Health Services in Tennessee 
+### > __Monthly Data__: 2007.1 - 2014.9 (93 monthly observations and roughly 7 year statistics)
+
+***
+
+# Time Series Plot of Original Data
+
+```{r read_data, echo=T, comment=NA, message=FALSE , warning=FALSE, fig.align='left'}
+library(RCurl)
+URL="http://research.stlouisfed.org/fred2/data/SMU47000006500000003.txt"
+pay=getURL(URL)
+pay.ts=read.table(textConnection(pay),skip=12)[,2]
+pay.ts=ts(pay.ts, start=c(2007,1), frequency=12)
+ts.plot(pay.ts,main="", xlim=c(2007,2014), ylab='Hourly Earnings ($)', type='o')
+# Average Hourly Earnings of All Employees: Education and Health Services in Tennessee
+```
+
+### > Time series seems to keep constant from 2007 until about the third quarter of 2010 where it makes a sharp spike. Then it keeps decreasing to be constant. </br>
+### > Clearly, the mean does not remain constant which indicates that this series is nonstationary. </br>
+### > My curiosity is why there is a sudden jump in between 2010 and 2011. Is there any policy about education and health service made by then? will this pattern appear again in the future? and find an Arima model to fit the data and do excellent job in forecasting. 
+
+***
+
+# Check Stationary Process
+```{r check stationary, echo=T, comment=NA, message=FALSE , warning=FALSE}
+library(TSA)
+acf(pay.ts,lag=90,main="ACF E&H Hourly Salary", xlim=c(0,8),xlab='Seasonal Lag')
+pacf(pay.ts,lag=90,main="PACF E&H Hourly Salary", xlim=c(0,8),xlab='Seasonal Lag')
+library(tseries)
+adf.test(pay.ts)
+```
+
+### > Both ACF and PACF plots show signs that the E&H Salary data is nonstationary. This is suggested by a gradually trails off in the ACF and a very large at lag 1 in the PACF. 
+### > Amented Dickey-Fuller test also supports my thought. It's not stationary as the p-value is higher than 0.05. "Non-stationary" hypothesis cannot be rejected.
+
+***
+
+# Analyzing Detrended Data
+```{r decomposition, echo=T, comment=NA, message=FALSE , warning=FALSE, fig.align='left'}
+library(dynlm)
+t=time(pay.ts)
+fit = lm(pay.ts ~ t + I(t^2) + I(t^3))
+pay.detrend=fit$resid
+plot(pay.detrend,type="o",ylab="Average Hourly Earnings",xlab="Time",main="Detrended Time Series") 
+acf(pay.detrend,lag=90,main="ACF of Detrended TS")
+pacf(pay.detrend,lag=90,main="PACF of Detrended TS")
+adf.test(pay.detrend)
+```
+
+### > Both the ACF and PACF plots indicate the detrended time series doesn't make to be stationary. </br>
+### > The ACF still slowly decreases and the PACF is still very large at lag 1. Combined with conclusion draw from Augmented Dickey-Fuller test, simply detrending the series isn't enough to turn the series into a stationary process.
+
+***
+
+# Other Transformation
+```{r boxcox transformation, echo=T, comment=NA, message=FALSE , warning=FALSE}
+BoxCox.ar(pay.ts)
+```
+
+### > Since the 95% confidence interval include between -2 and 2, it suggests that the data isn't necessary to be transformed.
+
+***
+
+# 1st Order Differencing
+```{r 1st difference, echo=T, comment=NA, message=FALSE , warning=FALSE}
+plot(diff(pay.ts),main="1st order differencing", ylab='Average Hourly Earnings', type='o') 
+adf.test(diff(pay.ts))
+```
+
+### > After 1st order differencing, the time series plot seem to be stationary. The mean mean keeps to be constant over time and there is a little volatility in between 2010 and 2011 (my question)
+
+***
+
+# Seasonal Order Differencing
+```{r seasonal difference, echo=T, comment=NA, message=FALSE , warning=FALSE}
+plot(diff(pay.ts,lag=12),main="seasonal order differencing", 
+     ylab='Average Hourly Earnings', type='o') 
+adf.test(diff(pay.ts,lag=12))
+```
+
+### > After seasonal order differencing, the time series plot still looks non-stationary. It seems to be unnecessary to take seasonal order differencing as also supported by the Augmented Dickey-Fuller test. 
+
+***
+
+# Time Series Plot of Seasonality
+```{r seasonality, echo=T, comment=NA, message=FALSE , warning=FALSE}
+plot(pay.ts,main="Time Series Plot with Monthly Label", ylab='Average Hourly Earnings')
+points(y=pay.ts,x=time(pay.ts),pch=as.vector(season(pay.ts)))
+library(ggplot2)
+month_range = factor(month.name,levels=month.name)
+measure = pay.ts[1:84]
+mydata = data.frame(month_range, measure)
+ggplot(mydata, aes(x=factor(month_range), y=measure)) + 
+  geom_boxplot(aes(fill=measure)) + xlab("Month") + ylab("Average Hourly Earnings") + 
+  scale_fill_discrete(name = "Measure")
+```
+
+### > it seems that January and Febrary are always higher than September and October. The monthly box-plot also supports this observation, which indicates seasonality and encourages me to try seasonal arima model to fit the data. 
+
+***
+
+# Model Specification
+```{r model selection 1, echo=T, comment=NA, message=FALSE , warning=FALSE}
+pay.df=diff(pay.ts)
+acf(pay.df,lag=90,main="ACF of Differenced TS", xlim=c(0,8),
+    xlab='Seasonal Lag', ci.type = "ma")
+pacf(pay.df,lag=90,main="PACF of Differenced TS", xlim=c(0,8),xlab='Seasonal Lag')
+```
+
+### > Using conservative confidence interval to plot ACF, the acf suggests a possible seasonal MA(0 or 1) and the PACF indicates a possible seasonal AR(0 or 1) model </br>
+### > Also the lag 1 in PACF almost reach signficance, which suggests me to consider AR(1) nonseasonal model. 
+### > What's odd is the sike isn't exactly on the seasonal lag (question)
+
+***
+
+# Model Specification
+```{r model selection 2, fig.keep= 'none', echo=T, comment=NA, message=FALSE , warning=FALSE}
+graphics.off()
+rm(ls=x)
+rm(ls=y)
+rm(ls=z)
+library(astsa)
+x=numeric(18)
+z=numeric(18)
+y=matrix(,18,5)
+n=1
+for (a in 0:1) {
+  for (b in 0:2 ) {
+    for (c in 0:2) {
+      x[n]=sarima(pay.ts, a, 1, 0, b, 0, c, 12, detail=F, no.constant = T)$AIC
+      z[n]=sarima(pay.ts, a, 1, 0, b, 0, c, 12, detail=F, no.constant = T)$BIC
+      y[n,]=c(a,b,c,x[n],z[n])
+      n=n+1
+      }
+    }
+  }
+rownames(y)=c(1:18)
+colnames(y)=c('AR(p)', 'SAR(P)', 'SMA(Q)', 'AIC','BIC')
+print(y)
+```
+
+### > According to AIC and BIC, the best model is SARMA(1,1) model with 1st order differencing. Let's do time series diagnose.
+
+***
+
+# Model Diagnose
+```{r model diagnose, echo=T, comment=NA, message=FALSE , warning=FALSE, fig.height=9}
+(pay.m1=sarima(pay.ts, 0,1,0,1,0,1,12, details = F,no.constant = T)$fit)
+```
+
+### > It looks this model does a good job to increase log-liklihood. Since AIC = -2Ln(L)+ 2k, the AIC in the new model is the smallest. And both seasonal factors are significant to be included in the model. </br>
+### > The Standard Residuals resmembles differenced time series and looks like white noise with a little bit vilitation. It has outlier in the upper tail which is where the large spike occurred in time series plot. </br>
+### > However, residual autocorrelations at higher lag seem to reject the randomness of the error terms as shown in the Ljung Box test.</br>
+### > Actually, an optimized algorithm function called auto.arima() gave me another model, AR-SAR(1,1) with 1st order differencing. Let's run test on this model given by the computer. 
+
+***
+
+# Model Selection
+### > The ARIMA model I choose is in the following form:
+$$(1 - 0.9977*B^{12}) Y_t=(1 + 0.9645*B^{12}) a_t$$
+$$Y_t= 0.9977*Y_{t-12} + a_t + 0.9645*a_{t-12}$$
+
+***
+
+# Model Comparison
+```{r model comparison1, echo=T, comment=NA, message=FALSE, warning=FALSE, fig.height=9}
+(pay.m2=sarima(pay.ts, 1,1,0,1,0,0,12, details = F,no.constant = T)$fit)
+```
+
+```{r model comparison2, echo=T, comment=NA, message=FALSE, warning=FALSE}
+pay.fit2=pay.ts-resid(pay.m2)
+pay.fit=pay.ts-resid(pay.m1)
+require(graphics)
+ts.plot(pay.ts, pay.fit, gpars=list(xlab="year", xlim= c(2007, 2014), ylab="Average Hourly Earnings"), 
+        col=c("black","red"), main= "Model Fit of Selected Model")
+ts.plot(pay.ts,pay.fit2, gpars=list(xlab="year", xlim= c(2007, 2014), ylab="Average Hourly Earnings"), 
+        col=c("black","red"), main= "Model Fit of Optimized Model")
+ifelse(sum(resid(pay.m2$fit)^2) > sum(resid(pay.m1$fit)^2), 
+       "Selected Model Has Smaller Sum of Sigma Square", 
+       "Optimized Model Has Smaller Sum of Sigma Square")  
+```
+
+### > As shown above, the model has higher AIC value (-1.857 vs. -2.28), which is not desired. However, the model does a good job in making residuals to be white noise. All residuals are smaller enough to support white noise hypothesis shown in the Ljung Box test. </br>
+### > Although they both show good fit to original data, the selected model has least sum of sigma square. Moreover, both nonseasonal and seasonal factor in the optimized model are not significant enough to be included in the model. Therefore, SARMA(1,1) seem be the best model to fit the data. 
+
+***
+
+# Model Forecast
+```{r forecast,  echo=T, comment=NA, message=FALSE , warning=FALSE}
+library(forecast)
+h=12
+n = length(pay.ts) - h
+pay1 = ts(pay.ts[1:n],start=c(2007,1), frequency=12)
+pay2 = ts(pay.ts[(n+1):length(pay.ts)], end =c(2014,9), frequency=12)
+PredictedValues=pay1
+pay1.pr = sarima.for(PredictedValues, n.ahead = h, 0,1,0,1,0,1,12,no.constant = T) 
+lines(pay2);lines(pay2);lines(pay2);lines(pay2)
+abline(v=n+.5)
+error=pay2 - pay1.pr$pred 
+predictions = pay1.pr$pred
+se = pay1.pr$se
+actual=pay2
+cbind(predictions,se,actual,error)
+```
+
+### > Using a built-up model to predict 12 month data approaching the future, the graph is good at forecasting the future values of the E&H hourly salary. All predicted values are within 95% confidence interval. </br>
+### > However, the error tends to go higher as it progresses to the future. And the model consistently underestimate the realistic value.   
+
