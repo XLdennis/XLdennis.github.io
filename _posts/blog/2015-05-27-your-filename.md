@@ -3,11 +3,10 @@ published: false
 ---
 
 ---
-layout:     post
-title:      Git工作原理
+layout: post
+title: 使用Github Pages建独立博客
+description: Github本身就是不错的代码社区，他也提供了一些其他的服务，比如Github Pages，使用它可以很方便的建立自己的独立博客，并且免费。
 category: blog
-description: 觉得github很难，遂写一篇博客。
-
 ---
 
 在 Git 内都只有三种状态：已提交（committed），已修改（modified）和已暂存（staged）。`已提交`表示该文件已经被安全地保存在本地数据库中了；`已修改`表示修改了某个文件，但还没有提交保存；`已暂存`表示把已修改的文件放在下次提交时要保存的清单中。
