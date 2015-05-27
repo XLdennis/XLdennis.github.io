@@ -69,7 +69,12 @@ Git配置
 	$ git commit #提交add暂存的部分同步
 	$ 一般是vim编辑器，可以使用 git config --global core.editor 命令设定你喜欢的编辑软件
 	
+[删除文件]
 
+	$ git rm xxx
+	$ git commit -m "xxxx"
+	$ git push origin master --force
+	
 
 
 		
