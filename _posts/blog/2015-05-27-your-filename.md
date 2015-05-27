@@ -1,5 +1,5 @@
 ---
-published: true
+published: false
 ---
 
 ---
@@ -7,6 +7,7 @@ layout:     post
 title:      Git工作原理
 category: blog
 description: 觉得github很难，遂写一篇博客。
+
 ---
 
 在 Git 内都只有三种状态：已提交（committed），已修改（modified）和已暂存（staged）。`已提交`表示该文件已经被安全地保存在本地数据库中了；`已修改`表示修改了某个文件，但还没有提交保存；`已暂存`表示把已修改的文件放在下次提交时要保存的清单中。
