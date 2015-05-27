@@ -74,7 +74,11 @@ Git配置
 	$ git rm xxx
 	$ git commit -m "xxxx"
 	$ git push origin master --force
-	
+
+[同步github文件到本地]
+
+	$ git clone https://github.com/[username]/[repository].git #在此之前先cd到自己想要释放的文件目录位置
+	$ git push #如果在github上修改了文件内容，git push到本地修改
 
 
 		
