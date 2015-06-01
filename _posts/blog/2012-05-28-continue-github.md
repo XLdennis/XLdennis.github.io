@@ -5,6 +5,7 @@ category: blog
 description: 太乱了，改天有时间再整理。
 --
 
+主要介绍Github的入门和基础，关于头文件问题，可能是mou，也可能是我还不知道
 
 Git 基础
 ---
