@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 47f8853d818144e4d00d812e7fe7670f3ab5000e
 ---
 layout:     post
 title:      Github 续I
@@ -7,7 +10,12 @@ category: blog
 description: 太乱了，改天有时间再整理。
 --
 
+<<<<<<< HEAD
 >>>>>>> 824c43fcb21a2bebc4a18de3021b8c8099ce8899
+=======
+主要介绍Github的入门和基础，关于头文件问题，可能是mou，也可能是我还不知道
+
+>>>>>>> 47f8853d818144e4d00d812e7fe7670f3ab5000e
 Git 基础
 ---
 [历史记录]
