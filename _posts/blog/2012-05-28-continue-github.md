@@ -1,3 +1,10 @@
+
+                ---
+                layout: post
+                categories: [Tools]
+                tags: [jekyll, github, git, markdown]
+                ---
+
 Git 基础
 ---
 [历史记录]
@@ -12,6 +19,7 @@ Git 基础
 	%H	提交对象（commit）的完整哈希字串
 	%h	提交对象的简短哈希字串
 	%T	树对象（tree）的完整哈希字串
+	
 	%t	树对象的简短哈希字串
 	%P	父对象（parent）的完整哈希字串
 	%p	父对象的简短哈希字串
