@@ -1,10 +1,3 @@
-
-                ---
-                layout: post
-                categories: [Tools]
-                tags: [jekyll, github, git, markdown]
-                ---
-
 Git 基础
 ---
 [历史记录]
