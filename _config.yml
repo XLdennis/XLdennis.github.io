@@ -4,8 +4,6 @@ markdown: kramdown
 pygments: true
 paginate: 8
 permalink: /:title
-# MathJax Support
-mathjax:true
 
 
 title: Dennis.com
