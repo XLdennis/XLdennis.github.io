@@ -7,8 +7,6 @@
 @import url(http://fonts.googleapis.com/css?family=Merriweather Sans);
 @import url(http://fonts.googleapis.com/css?family=Electrolize);
 @import url(http://fonts.googleapis.com/css?family=Cuprum);
-
-/***********default settings**********/
 body
 {
     font-size:18px;
@@ -191,3 +189,7 @@ embed,object,iframe
     font-size: 14px;
     line-height:1.6;
 }
+#footer { 
+   font-size:11px;
+}
+
