@@ -5,12 +5,10 @@
     <title>Dennis Liu |  刘翔</title>
     <meta name="author" content="Dennis Liu | 刘翔"/>
     <title>{{ page.title }} | {{ site.author }}</title>
-    <title>{% if page.path == 'index.html' %}{{ site.name }}{% else %}{% unless page.id %}{{ site.name }} - {% endunless %}{{ page.title }}{% endif %}</title>
+    <title>{% if page.path == 'home.html' %}{{ site.name }}{% else %}{% unless page.id %}{{ site.name }} - {% endunless %}{{ page.title }}{% endif %}</title>
     <link rel="shortcut icon" href="{{ site.url}}/media/css/favicon.ico">
     <link rel="stylesheet" href="{{ site.url}}/media/css/home.css">
     <link rel="stylesheet" href="/media/css/highlight.css" />
-    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   </head>
   <body>
     <div id="container">
