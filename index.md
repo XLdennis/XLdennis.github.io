@@ -1,55 +1,23 @@
 ---
-title: 首页
-layout: page
+title: Don't Panic
+layout: home
 ---
 
-<ul class="listing">
-{% for post in paginator.posts %}
-  {% capture y %}{{post.date | date:"%Y"}}{% endcapture %}
-  {% if year != y %}
-    {% assign year = y %}
-    <li class="listing-seperator">{{ y }}</li>
-  {% endif %}
-  <li class="listing-item">
-    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-    {% if site.truncate %}
-    <p>{{ post.content | strip_html | truncate: site.truncate }}</p>
-    {% endif%}
-  </li>
-{% endfor %}
-</ul>
+Please refer to the *about* part in [English](http://yufree.github.com/blog) blog if you don't know Chinese.
 
-<div id="post-pagination" class="paginator">
+贫道满脑不合时宜，好诙谐吐槽，浏览本博勿认真于字句之间。
 
-  {% if paginator.previous_page %}
-    {% if paginator.previous_page == 1 %}
-    <a href="/"><前页</a>
-    {% else %}
-    <a href="/page{{paginator.previous_page}}">&lt;前页</a>
-    {% endif %}
-  {% else %}
-    <span class="previous disabled">&lt;前页</span>
-  {% endif %}
+为求博识，现修行于中科院某所。
 
-      {% if paginator.page == 1 %}
-      <span class="current-page">1</span>
-      {% else %}
-      <a href="/">1</a>
-      {% endif %}
+每日往来寝室实验室之间，试错不止。
 
-    {% for count in (2..paginator.total_pages) %}
-      {% if count == paginator.page %}
-      <span class="current-page">{{count}}</span>
-      {% else %}
-      <a href="/page{{count}}">{{count}}</a>
-      {% endif %}
-    {% endfor %}
+如有闲暇，绘光影于RGB间，然罕有称心之作。
 
-  {% if paginator.next_page %}
-    <a class="next" href="/page{{paginator.next_page}}">后页&gt;</a>
-  {% else %}
-    <span class="next disabled" >后页&gt;</span>
-  {% endif %}
-  (共{{ paginator.total_posts }}篇)
-</div>
+吃货但无炉灶，愿代神农鉴各地美食之毒。
+
+做会议演讲总感时间紧迫且注册费用不菲，因而拟学成后教书，一来吐槽时间充足，二来还能收费。
+
+女友失踪二十余年，自拟一上联，有缘者应可对出工整下联：
+
+气宇轩上观风平浪
+
