@@ -203,7 +203,8 @@ footer {
     width:95%;
     margin:0 auto;
     overflow:hidden;
-    position:relative
+    position:relative;
+    font-size=11px
 }
 
 #footer .line {
