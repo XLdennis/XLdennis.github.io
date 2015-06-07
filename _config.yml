@@ -1,15 +1,2 @@
-auto: true
-
-markdown: kramdown
-permalink: /:title/
-url: http://liudennis.com
-name: Dennis Liu
-author: Dennis Liu
-email: liux03@goldmail.etsu.edu
-github: xldennis
-pygments: true
-safe: true
-paginate: 20
-author_info: <a href="http://liudennis.com/">Dennis</a>
-about: “第一个搭建的个人博客，希望能不断改进。”
-
+markdown: rdiscount 
+author: Miao Yu 
