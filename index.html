@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title> Index Page | Dennis Liu</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
+</head>
+
+<body>
+<div class="vi">
+    <div class="sidebar">
+        <div class="header">
+            <h1>Dennis Liu</h1>
+            <div class="quote">
+                <p class="quote-text animate-init">&lsquo;昨夜西风凋碧树，独上高楼，望尽天涯路&rsquo;；</br> &lsquo;衣带渐宽终不悔，为伊消得人憔悴&rsquo;；</br>&lsquo;众里寻他千百度，回头蓦见，那人正在灯火阑珊处&rsquo;</p>
+                <p class="quote-author animate-init"> 《人间词话》—— <strong>王国维</strong></p>
+            </div>
+        </div>
+        <div class="menu">
+            <a href="liudennis.com" class="animate-init">Home Page</a>
+            <a href="cn.liudenn.com" class="animate-init">English Website</a>
+            <a href="en.liudennis.com" class="animate-init">中文网页</a>
+            <a href="liudennis.com/cv" class="animate-init">Resume/简历</a>
+        </div>
+        <div class="location">
+            <i class="location-icon"></i>
+            <span class="location-text animate-init">Johnson City, TN 37614, United States</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <span class="close">close</span>
+    </div>
+</div>
+<script type="text/javascript" src="assets/vendors/jquery/index.js"></script>
+<script>
+    $(document).ready(function () {
+        var delay = 1;
+        var DELAY_STEP = 200;
+        var animationOptions = { opacity: 1, top: 0};
+
+        $('h1').animate(animationOptions).promise()
+                .pipe(animateMain)
+                .pipe(animateLocationIcon);
+
+        function animateMain() {
+            var dfd = $.Deferred();
+            var els = $('.animate-init');
+            var size = els.size();
+
+            els.each(function (index, el) {
+                delay++;
+                $(el).delay(index * DELAY_STEP)
+                        .animate(animationOptions);
+                (size - 1 === index) && dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        function animateLocationIcon() {
+            $('.location-icon').delay(delay * DELAY_STEP).animate({
+                opacity: 1,
+                top: 0
+            }).promise().done(animationQuote);
+        }
+
+        function animationQuote() {}
+    });
+</script>
+</body>
+</html>
